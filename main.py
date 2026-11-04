@@ -42,7 +42,7 @@ def main():
 
     command = sys.argv[1].lower()
     try:
-        n = int(sys.argv[2])
+        n = parse_number(sys.argv[2])
         if n < 0:
             raise ValueError
     except ValueError:
