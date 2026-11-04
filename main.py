@@ -46,7 +46,7 @@ def main():
         if n < 0:
             raise ValueError
     except ValueError:
-        print(f"Ошибка: Аргумент '{sys.argv[2]}' должен быть целым неотрицательным числом.")
+        print(f"Ошибка ввода: {e}.")
         sys.exit(1)
 
     try:
