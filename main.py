@@ -4,21 +4,24 @@ from fibonacci_module import calculate_fibonacci
 
 MAX_N = 100_000
 
-
 def print_usage():
-    print("Использование: python main.py <команда> <число>")
+    print("Использование: python3 main.py <команда>")
     print("Доступные команды:")
-    print("  fib <N>   - вычислить N-е число Фибоначчи")
-    print("  dec <N>   - вычислить N-е Десятиугольное число")
+    print("  fib   - вычислить число Фибоначчи")
+    print("  dec   - вычислить десятиугольное число")
     print(f"Ограничение: 0 <= N <= {MAX_N}")
-    print("При вводе числа все буквы и лишние символы игнорируются")
-
+    print("После запуска введите число N и нажмите Enter.")
+    print("Допускаются только цифры 0-9, без букв и других символов.")
 
 def parse_number(raw_input: str) -> int:
-    cleaned = "".join(char for char in raw_input if char.isdigit())
+    # Разрешаем только цифры. Пробелы по краям — не ошибка.
+    cleaned = raw_input.strip()
 
     if not cleaned:
-        raise ValueError(f"'{raw_input}' не содержит цифр (ожидаются только цифры 0-9)")
+        raise ValueError("пустая строка (введите число)")
+
+    if not cleaned.isdigit():
+        raise ValueError(f"'{raw_input}' содержит недопустимые символы (разрешены только цифры 0-9)")
 
     n = int(cleaned)
 
@@ -27,17 +30,27 @@ def parse_number(raw_input: str) -> int:
 
     return n
 
-
 def main():
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 2:
         print("Ошибка: Неверное количество аргументов.")
         print_usage()
         sys.exit(1)
 
     command = sys.argv[1].lower()
 
+    if command not in ('fib', 'dec'):
+        print(f"Ошибка: Неизвестная команда '{command}'.")
+        print_usage()
+        sys.exit(1)
+
     try:
-        n = parse_number(sys.argv[2])
+        raw_input = input("Введите число N: ")
+    except (EOFError, KeyboardInterrupt):
+        print("\nВвод прерван.")
+        sys.exit(1)
+
+    try:
+        n = parse_number(raw_input)
     except ValueError as e:
         print(f"Ошибка ввода: {e}.")
         sys.exit(1)
@@ -46,17 +59,12 @@ def main():
         if command == 'fib':
             result = calculate_fibonacci(n)
             print(f"Число Фибоначчи для N={n}: {result}")
-        elif command == 'dec':
+        else:  # command == 'dec'
             result = decagonal_number(n)
             print(f"Десятиугольное число для N={n}: {result}")
-        else:
-            print(f"Ошибка: Неизвестная команда '{command}'.")
-            print_usage()
-            sys.exit(1)
     except ValueError as e:
         print(f"Ошибка вычисления: {e}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()
